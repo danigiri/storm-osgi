@@ -33,8 +33,8 @@
           <instructions>
             <Bundle-SymbolicName>${project.artifactId}.${project.artifactId}</Bundle-SymbolicName>
             <Bundle-Version>${project.version}</Bundle-Version>
-            <Private-Package>storm.starter.impl*</Private-Package>
-            <Export-Package>storm.starter</Export-Package>
+            <Private-Package></Private-Package>
+            <Export-Package></Export-Package>
             <Import-Package>
               *
             </Import-Package>
