@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * specified interval to retrieve create tuples to be emitted."
  * @author rmoquin
  */
-public class IntervalSpoutDefinition extends BasicSpoutDefinition {
+public class PollingSpoutDefinition extends SpoutDefinition {
 
   private ScheduledExecutorService executorService;
   private int interval;
@@ -23,12 +23,12 @@ public class IntervalSpoutDefinition extends BasicSpoutDefinition {
 
   @Override
   public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
-    if ((super.source == null) || !(this.source instanceof IPollingTupleSource)) {
+    if ((super.getSource() == null) || !(this.getSource() instanceof IPollingTupleSource)) {
       throw new IllegalStateException("The configured ITupleSource implementation must be an IPeriodicTupleSource subclass implementation.");
     }
     super.open(conf, context, collector);
     executorService = Executors.newScheduledThreadPool(1);
-    executorService.schedule((IPollingTupleSource) super.source, interval, unit);
+    executorService.schedule((IPollingTupleSource) super.getSource(), interval, unit);
   }
 
   @Override

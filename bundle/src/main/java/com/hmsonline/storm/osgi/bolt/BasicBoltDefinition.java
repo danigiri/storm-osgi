@@ -105,4 +105,18 @@ public class BasicBoltDefinition extends BaseComponent implements IBoltDefinitio
   public void setParallelismHint(Integer parallelismHint) {
     this.parallelismHint = parallelismHint;
   }
+
+  /**
+   * @return the outputFields
+   */
+  public String[] getOutputFields() {
+    return outputFields;
+  }
+
+  /**
+   * @param outputFields the outputFields to set
+   */
+  public void setOutputFields(String[] outputFields) {
+    this.outputFields = outputFields;
+  }
 }

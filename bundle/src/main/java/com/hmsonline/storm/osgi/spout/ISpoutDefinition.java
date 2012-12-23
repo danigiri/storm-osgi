@@ -1,6 +1,7 @@
 package com.hmsonline.storm.osgi.spout;
 
 import backtype.storm.topology.IRichSpout;
+import java.util.List;
 
 /**
  *
@@ -11,7 +12,7 @@ public interface ISpoutDefinition extends IRichSpout {
   /**
    * @return the outputFields
    */
-  String[] getOutputFields();
+  List<String> getOutputFields();
 
   /**
    * @return the parallelismHint
@@ -26,7 +27,7 @@ public interface ISpoutDefinition extends IRichSpout {
   /**
    * @param outputFields the outputFields to set
    */
-  void setOutputFields(String[] outputFields);
+  void setOutputFields(List<String> outputFields);
 
   /**
    * @param parallelismHint the parallelismHint to set
