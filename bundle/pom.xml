@@ -26,28 +26,6 @@
           </execution>
         </executions>
       </plugin>
-<!--      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <tasks>
-                <taskdef classname="org.apache.xbean.blueprint.generator.MappingGeneratorTask" name="mapping">
-                  <classpath>
-                    <pathelement path="${basedir}/target/classes" />
-                    <path refid="maven.compile.classpath" />
-                  </classpath>
-                </taskdef>
-                <mapping namespace="http://storm.hmsonline.com/schemas/osgi" srcdir="src/main/java" destFile="${basedir}/target/classes/storm-osgi.xsd" metaInfDir="${basedir}/target/classes/"/>
-              </tasks>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>-->
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -60,7 +38,7 @@
               com.hmsonline.storm.osgi.*
             </Export-Package>
             <Import-Package>
-              *
+              clojure.lang,*
             </Import-Package>
           </instructions>
         </configuration>

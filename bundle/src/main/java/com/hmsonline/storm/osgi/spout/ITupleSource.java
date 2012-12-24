@@ -1,12 +1,13 @@
 package com.hmsonline.storm.osgi.spout;
 
+import java.io.Serializable;
 import java.util.Queue;
 
 /**
  *
  * @author rmoquin
  */
-public interface ITupleSource {
+public interface ITupleSource extends Serializable {
 
   /**
    * The queue of tuples produced by this source which will be emitted by the Spout using this tuple source. It is the
