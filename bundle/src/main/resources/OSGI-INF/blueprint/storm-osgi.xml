@@ -11,8 +11,8 @@
     </property>
   </bean>
   
-  <!--<service id="topologyService" activation="eager" ref="topologyManager" interface="com.hmsonline.storm.osgi.impl.TopologyManager">
-  </service>-->
+  <service id="topologyService" activation="eager" ref="topologyManager" interface="com.hmsonline.storm.osgi.impl.TopologyManager">
+  </service>
   
   <reference-list id="topologyList" interface="com.hmsonline.storm.osgi.topology.ITopologyDefinition" member-type="service-object" availability="optional">
     <reference-listener ref="topologyManager" bind-method="onBindService" unbind-method="onUnbindService"/>
