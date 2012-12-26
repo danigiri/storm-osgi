@@ -1,8 +1,8 @@
 package com.hmsonline.storm.osgi.topology;
 
 import backtype.storm.Config;
-import com.hmsonline.storm.osgi.bolt.IBoltDefinition;
-import com.hmsonline.storm.osgi.spout.ISpoutDefinition;
+import com.hmsonline.storm.osgi.bolt.BoltDefinition;
+import com.hmsonline.storm.osgi.spout.SpoutDefinition;
 import java.util.List;
 
 /**
@@ -14,22 +14,22 @@ public interface ITopologyDefinition {
   /**
    * @return the bolts
    */
-  List<IBoltDefinition> getBolts();
+  List<BoltDefinition> getBolts();
 
   /**
    * @return the spouts
    */
-  List<ISpoutDefinition> getSpouts();
+  List<SpoutDefinition> getSpouts();
 
   /**
    * @param bolts the bolts to set
    */
-  void setBolts(List<IBoltDefinition> bolts);
+  void setBolts(List<BoltDefinition> bolts);
 
   /**
    * @param spouts the spouts to set
    */
-  void setSpouts(List<ISpoutDefinition> spouts);
+  void setSpouts(List<SpoutDefinition> spouts);
 
   /**
    * @return the config

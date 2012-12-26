@@ -8,7 +8,7 @@
   </parent>
   <artifactId>storm-osgi</artifactId>
   <packaging>bundle</packaging>
-  <name>Storm OSGI</name>  
+  <name>Storm OSGI</name>
   <build>
     <plugins>
       <plugin>

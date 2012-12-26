@@ -1,6 +1,7 @@
 package com.hmsonline.storm.osgi.spout;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -10,11 +11,18 @@ import java.util.Queue;
 public interface ITupleSource extends Serializable {
 
   /**
-   * The queue of tuples produced by this source which will be emitted by the Spout using this tuple source. It is the
-   * responsibility of this input source to push tuples to be emitted onto this queue so they will be processed by the
-   * spout.
-   *
-   * @param listener
+   * The tuple source should execute some logic to, at a minimum, place a tuple on
+   * the tuple queue set by the containing component.  This method can be polled by
+   * the containing component, or could be invoked by a third party listener (a JMS client for example)
+   * with data to process and put onto the tuple queue.
    */
-  void setTupleQueue(Queue queue);
+  public void execute();
+  
+  /**
+   * The tuple queue set by the containing component that this source should place
+   * tuples on for the component to process.
+   *
+   * @param queue
+   */
+  void setTupleQueue(Queue<List> queue);
 }

@@ -1,12 +1,10 @@
-package com.hmsonline.storm.osgi.bolt;
-
-import backtype.storm.topology.IBasicBolt;
+package com.hmsonline.storm.osgi.topology;
 
 /**
  *
  * @author rmoquin
  */
-public interface IBoltDefinition extends IBasicBolt {
+public interface ITopologyComponent {
 
   /**
    * @return the name
@@ -27,5 +25,4 @@ public interface IBoltDefinition extends IBasicBolt {
    * @param parallelismHint the parallelismHint to set
    */
   void setParallelismHint(Integer parallelismHint);
-  
 }

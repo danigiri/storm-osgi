@@ -1,12 +1,32 @@
 package com.hmsonline.storm.osgi.spout;
 
 /**
- * Represents a configurable Storm BasicSpout.
+ * Implements a simple configurable BasicSpout which processes tuples placed on
+ * it's tuple queue by a tuple source.
  *
- * @org.apache.xbean.XBean element="basicSpout" description="Implements a simple configurable BasicSpout which listens
- * to tuples from it's tuple source."
+ * @org.apache.xbean.XBean element="basicSpout" description="Implements a basic
+ * configurable spout which emits tuples enqueued by the configured tuple source
+ * implementation.  The tuple source is expected to have it's own method of triggering
+ * it's execute method.
  *
+ * @see ITupleSource
  * @author rmoquin
  */
 public class BasicSpoutDefinition extends SpoutDefinition {
+
+  /**
+   * @return the source
+   */
+  @Override
+  public ITupleSource getSource() {
+    return super.source;
+  }
+
+  /**
+   * @param source the source to set
+   */
+  @Override
+  public void setSource(ITupleSource source) {
+    super.source = source;
+  }
 }

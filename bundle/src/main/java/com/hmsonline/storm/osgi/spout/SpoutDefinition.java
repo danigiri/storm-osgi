@@ -2,10 +2,9 @@ package com.hmsonline.storm.osgi.spout;
 
 import backtype.storm.spout.SpoutOutputCollector;
 import backtype.storm.task.TopologyContext;
-import backtype.storm.topology.OutputFieldsDeclarer;
-import backtype.storm.topology.base.BaseComponent;
-import backtype.storm.tuple.Fields;
-import backtype.storm.tuple.Values;
+import backtype.storm.topology.IRichSpout;
+import com.hmsonline.storm.osgi.topology.ComponentDefinition;
+import com.hmsonline.storm.osgi.tuple.TupleStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -17,24 +16,20 @@ import org.slf4j.LoggerFactory;
  *
  * @author rmoquin
  */
-public class SpoutDefinition extends BaseComponent implements ISpoutDefinition {
+public abstract class SpoutDefinition<T extends ITupleSource> extends ComponentDefinition implements IRichSpout {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(BasicSpoutDefinition.class);
-  private String name;
-  private List<String> outputFields;
-  private Integer parallelismHint;
-  private ITupleSource source;
+  private static final Logger LOGGER = LoggerFactory.getLogger(SpoutDefinition.class);
+  protected T source;
   private SpoutOutputCollector collector;
-  private Queue tupleQueue;
-
-  @Override
-  public void declareOutputFields(OutputFieldsDeclarer declarer) {
-    declarer.declare(new Fields(outputFields));
-  }
+  private Queue<List> tupleQueue;
 
   @Override
   public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
-    tupleQueue = new ConcurrentLinkedQueue();
+    this.source = this.getSource();
+    if (this.source == null) {
+      throw new IllegalStateException("A tuple source implementation must be configured.");
+    }
+    tupleQueue = new ConcurrentLinkedQueue<List>();
     this.collector = collector;
     this.source.setTupleQueue(this.tupleQueue);
   }
@@ -42,6 +37,7 @@ public class SpoutDefinition extends BaseComponent implements ISpoutDefinition {
   @Override
   public void close() {
     this.source.setTupleQueue(null);
+    this.tupleQueue.clear();
     this.tupleQueue = null;
   }
 
@@ -61,11 +57,13 @@ public class SpoutDefinition extends BaseComponent implements ISpoutDefinition {
 
   @Override
   public void nextTuple() {
-    Object tuple = this.tupleQueue.poll();
+    List<Object> tuple = this.tupleQueue.poll();
     if (tuple == null) {
       return;
     }
-    collector.emit(new Values(tuple));
+    for (TupleStream stream : super.streams) {
+      collector.emit(stream.getId(), tuple);
+    }
   }
 
   @Override
@@ -82,67 +80,7 @@ public class SpoutDefinition extends BaseComponent implements ISpoutDefinition {
     }
   }
 
-  /**
-   * @return the outputFields
-   */
-  @Override
-  public List<String> getOutputFields() {
-    return outputFields;
-  }
+  public abstract T getSource();
 
-  /**
-   * @param outputFields the outputFields to set
-   */
-  @Override
-  public void setOutputFields(List<String> outputFields) {
-    this.outputFields = outputFields;
-  }
-
-  /**
-   * @return the source
-   */
-  @Override
-  public ITupleSource getSource() {
-    return source;
-  }
-
-  /**
-   * @param source the source to set
-   */
-  @Override
-  public void setSource(ITupleSource source) {
-    this.source = source;
-  }
-
-  /**
-   * @return the parallelismHint
-   */
-  @Override
-  public Integer getParallelismHint() {
-    return parallelismHint;
-  }
-
-  /**
-   * @param parallelismHint the parallelismHint to set
-   */
-  @Override
-  public void setParallelismHint(Integer parallelismHint) {
-    this.parallelismHint = parallelismHint;
-  }
-
-  /**
-   * @return the name
-   */
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * @param name the name to set
-   */
-  @Override
-  public void setName(String name) {
-    this.name = name;
-  }
+  public abstract void setSource(T source);
 }

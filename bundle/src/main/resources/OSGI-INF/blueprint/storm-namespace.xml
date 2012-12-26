@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
-  <service id="StormOsgiXBeanNamespaceHandler" interface="org.apache.aries.blueprint.NamespaceHandler">
+  <service id="StormOsgiNamespaceHandler" interface="org.apache.aries.blueprint.NamespaceHandler">
     <service-properties>
       <entry key="osgi.service.blueprint.namespace" value="http://storm.hmsonline.com/schemas/osgi"/>
     </service-properties>

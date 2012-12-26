@@ -1,66 +1,51 @@
 package com.hmsonline.storm.osgi.bolt;
 
+import backtype.storm.task.OutputCollector;
 import backtype.storm.task.ShellBolt;
 import backtype.storm.task.TopologyContext;
-import backtype.storm.topology.BasicOutputCollector;
-import backtype.storm.topology.IRichBolt;
-import backtype.storm.topology.OutputFieldsDeclarer;
-import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Tuple;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 
 /**
- * Represents a configurable Storm ShellBolt.
+ * A bolt that can be configured to run a shell command.
  *
- * @org.apache.xbean.XBean element="shellBolt" description="Implements a simple configurable ShellBolt"
+ * @org.apache.xbean.XBean element="shellBolt" description="A bolt that can be configured to run a shell command."
  *
  * @author rmoquin
  */
-public class ShellBoltDefinition extends ShellBolt implements IBoltDefinition, IRichBolt {
+public class ShellBoltDefinition extends BoltDefinition {
 
-  private String name;
-  private Integer parallelismHint;
   private String[] command;
-  private String[] outputFields;
-  private Map<String, Object> configuration;
-
-  public ShellBoltDefinition() {
-    super("");
-  }
+  private ShellBolt shellTask;
 
   @PostConstruct
-  public void init() {
-    super.setCommandArray(command);
+  @Override
+  public void initBolt() {
+    shellTask = new ShellBolt(command);
+    this.setExecutor(new IBoltExecutor() {
+
+      @Override
+      public List<Object> execute(Tuple tuple) {
+        ShellBoltDefinition.this.shellTask.execute(tuple);
+        return null;
+      }
+    });
+    super.initBolt();
   }
 
   @Override
-  public void prepare(Map stormConf, TopologyContext context) {
-  }
-
-  @Override
-  public void execute(Tuple tuple, BasicOutputCollector collector) {
+  public void prepare(Map configuration, TopologyContext context, OutputCollector collector) {
+    super.prepare(configuration, context, collector);
+    this.shellTask.prepare(configuration, context, collector);
   }
 
   @Override
   public void cleanup() {
-    //Why bother, this isn't guarenteed to be called anyhow....
+    this.shellTask.cleanup();
   }
-
-  @Override
-  public void declareOutputFields(OutputFieldsDeclarer declarer) {
-    declarer.declare(new Fields(outputFields));
-  }
-
-  @Override
-  public Map<String, Object> getComponentConfiguration() {
-    return this.configuration;
-  }
-
-  public void setComponentConfiguration(Map<String, Object> configuration) {
-    this.configuration = configuration;
-  }
-
+  
   /**
    * @return the command
    */
@@ -73,51 +58,5 @@ public class ShellBoltDefinition extends ShellBolt implements IBoltDefinition, I
    */
   public void setCommand(String[] command) {
     this.command = command;
-  }
-
-  /**
-   * @return the outputFields
-   */
-  public String[] getOutputFields() {
-    return outputFields;
-  }
-
-  /**
-   * @param outputFields the outputFields to set
-   */
-  public void setOutputFields(String[] outputFields) {
-    this.outputFields = outputFields;
-  }
-
-  /**
-   * @return the name
-   */
-  @Override
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * @param name the name to set
-   */
-  @Override
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  /**
-   * @return the parallelismHint
-   */
-  @Override
-  public Integer getParallelismHint() {
-    return parallelismHint;
-  }
-
-  /**
-   * @param parallelismHint the parallelismHint to set
-   */
-  @Override
-  public void setParallelismHint(Integer parallelismHint) {
-    this.parallelismHint = parallelismHint;
   }
 }
