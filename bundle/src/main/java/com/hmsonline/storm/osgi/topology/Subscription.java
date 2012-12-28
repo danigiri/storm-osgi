@@ -3,6 +3,7 @@ package com.hmsonline.storm.osgi.topology;
 import com.hmsonline.storm.osgi.subscription.DistributionPolicy;
 import com.hmsonline.storm.osgi.subscription.ShuffleDistribution;
 import com.hmsonline.storm.osgi.tuple.TupleStream;
+import java.io.Serializable;
 import javax.annotation.PostConstruct;
 
 /**
@@ -13,15 +14,17 @@ import javax.annotation.PostConstruct;
  *
  * @author rmoquin
  */
-public class Subscription {
+public class Subscription implements Serializable {
 
-  private ITopologyComponent to;
+  private String to;
   private TupleStream stream;
   private DistributionPolicy distribution;
 
   @PostConstruct
   public void init() {
-    this.distribution = new ShuffleDistribution();
+    if (this.distribution != null) {
+      this.distribution = new ShuffleDistribution();
+    }
   }
 
   /**
@@ -41,14 +44,14 @@ public class Subscription {
   /**
    * @return the to
    */
-  public ITopologyComponent getTo() {
+  public String getTo() {
     return to;
   }
 
   /**
    * @param to the to to set
    */
-  public void setTo(ITopologyComponent to) {
+  public void setTo(String to) {
     this.to = to;
   }
 

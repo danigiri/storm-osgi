@@ -13,19 +13,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * @org.apache.xbean.XBean
  * @author rmoquin
  */
-public abstract class SpoutDefinition<T extends ITupleSource> extends ComponentDefinition implements IRichSpout {
+public class SpoutDefinition extends ComponentDefinition implements IRichSpout {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SpoutDefinition.class);
-  protected T source;
+  private ITupleSource source;
   private SpoutOutputCollector collector;
   private Queue<List> tupleQueue;
 
   @Override
   public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
-    this.source = this.getSource();
     if (this.source == null) {
       throw new IllegalStateException("A tuple source implementation must be configured.");
     }
@@ -61,7 +60,7 @@ public abstract class SpoutDefinition<T extends ITupleSource> extends ComponentD
     if (tuple == null) {
       return;
     }
-    for (TupleStream stream : super.streams) {
+    for (TupleStream stream : super.getStreams()) {
       collector.emit(stream.getId(), tuple);
     }
   }
@@ -80,7 +79,17 @@ public abstract class SpoutDefinition<T extends ITupleSource> extends ComponentD
     }
   }
 
-  public abstract T getSource();
+  /**
+   * @return the source
+   */
+  public ITupleSource getSource() {
+    return this.source;
+  }
 
-  public abstract void setSource(T source);
+  /**
+   * @param source the source to set
+   */
+  public void setSource(ITupleSource source) {
+    this.source = source;
+  }
 }

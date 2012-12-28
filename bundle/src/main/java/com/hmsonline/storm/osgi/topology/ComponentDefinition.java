@@ -4,7 +4,6 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseComponent;
 import backtype.storm.tuple.Fields;
 import backtype.storm.utils.Utils;
-import com.hmsonline.storm.osgi.tuple.TupleSchema;
 import com.hmsonline.storm.osgi.tuple.TupleStream;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -12,16 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * @org.apache.xbean.XBean
  * @author rmoquin
  */
-public abstract class ComponentDefinition extends BaseComponent implements ITopologyComponent {
+public class ComponentDefinition extends BaseComponent implements ITopologyComponent {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ComponentDefinition.class);
   protected String name;
   private Integer parallelismHint;
-  protected TupleSchema schema;
-  protected TupleStream[] streams;
+  private String[] schema;
+  private TupleStream[] streams;
   protected Map<String, Object> configuration;
 
   @PostConstruct
@@ -40,7 +39,7 @@ public abstract class ComponentDefinition extends BaseComponent implements ITopo
   @Override
   public void declareOutputFields(OutputFieldsDeclarer declarer) {
     for (TupleStream stream : streams) {
-      declarer.declareStream(stream.getId(), new Fields(stream.getSchema().getFields()));
+      declarer.declareStream(stream.getId(), new Fields(stream.getSchema()));
     }
   }
 
@@ -90,7 +89,7 @@ public abstract class ComponentDefinition extends BaseComponent implements ITopo
    *
    * @return the schema
    */
-  public TupleSchema getSchema() {
+  public String[] getSchema() {
     return schema;
   }
 
@@ -99,7 +98,14 @@ public abstract class ComponentDefinition extends BaseComponent implements ITopo
    *
    * @param schema the schema to set
    */
-  public void setSchema(TupleSchema schema) {
+  public void setSchema(String[] schema) {
     this.schema = schema;
+  }
+
+  /**
+   * @return the streams
+   */
+  public TupleStream[] getStreams() {
+    return streams;
   }
 }

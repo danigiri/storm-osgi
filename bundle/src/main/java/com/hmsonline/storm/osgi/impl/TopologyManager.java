@@ -10,6 +10,7 @@ import com.hmsonline.storm.osgi.spout.SpoutDefinition;
 import com.hmsonline.storm.osgi.subscription.DistributionPolicy;
 import com.hmsonline.storm.osgi.topology.ITopologyDefinition;
 import com.hmsonline.storm.osgi.topology.Subscription;
+import com.hmsonline.storm.osgi.tuple.TupleStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +37,12 @@ public class TopologyManager {
   }
 
   public void onUnbindService(ITopologyDefinition definition) {
+    if (definition == null) {
+      if (LOGGER.isDebugEnabled()) {
+        LOGGER.debug("Null topology definition was provided for unbind service, ignoring.");
+      }
+      return;
+    }
     if (LOGGER.isInfoEnabled()) {
       LOGGER.info("Topology service, " + definition.getName() + " is being undeployed, shutting down topology if currently deployed.");
     }
@@ -55,32 +62,56 @@ public class TopologyManager {
     if (currentTopology != null) {
       throw new IllegalStateException("A topology with the name, " + definition.getName() + " has already been deployed, request for deployment will be ignored.");
     } else {
-      TopologyBuilder builder = new TopologyBuilder();
-      List<SpoutDefinition> spouts = definition.getSpouts();
-      for (Iterator<SpoutDefinition> it = spouts.iterator(); it.hasNext();) {
-        SpoutDefinition spoutDef = it.next();
-        builder.setSpout(spoutDef.getName(), spoutDef, spoutDef.getParallelismHint());
-      }
-      List<BoltDefinition> bolts = definition.getBolts();
-      for (Iterator<BoltDefinition> it = bolts.iterator(); it.hasNext();) {
-        BoltDefinition boltDef = it.next();
-        BoltDeclarer declarer = builder.setBolt(boltDef.getName(), boltDef, boltDef.getParallelismHint());
-        Subscription subscription = boltDef.getSubscription();
-        DistributionPolicy distribution = subscription.getDistribution();
-        distribution.setup(declarer, subscription);
-      }
+      try {
+        TopologyBuilder builder = new TopologyBuilder();
+        List<SpoutDefinition> spouts = definition.getSpouts();
+        for (Iterator<SpoutDefinition> it = spouts.iterator(); it.hasNext();) {
+          SpoutDefinition spoutDef = it.next();
+          builder.setSpout(spoutDef.getName(), spoutDef, spoutDef.getParallelismHint());
+        }
+        List<BoltDefinition> bolts = definition.getBolts();
+        for (int i = 0; i < bolts.size(); i++) {
+          BoltDefinition boltDef = bolts.get(i);
+          BoltDeclarer declarer = builder.setBolt(boltDef.getName(), boltDef, boltDef.getParallelismHint());
+          Subscription subscription = boltDef.getSubscription();
+          if (subscription.getStream() == null) {
+            String to = subscription.getTo();
+            for (int j = 0; j < spouts.size(); j++) {
+              SpoutDefinition sd = spouts.get(j);
+              if (to.equals(sd.getName())) {
+                subscription.setStream(sd.getStreams()[0]);
+                break;
+              }
+            }
+            if (subscription.getStream() == null) {
+              for (int j = 0; j < bolts.size(); j++) {
+                BoltDefinition bd = bolts.get(j);
+                if (to.equals(bd.getName())) {
+                  subscription.setStream(bd.getStreams()[0]);
+                  break;
+                }
+              }
+            }
+          }
+          DistributionPolicy distribution = subscription.getDistribution();
+          distribution.setup(declarer, subscription);
+        }
 
-      Config conf = new Config();
-      conf.setDebug(true);
-      /*    if (name != null) {
-       conf.setNumWorkers(3);
-       StormSubmitter.submitTopology(name, conf, builder.createTopology());
-       } else {*/
-      conf.setMaxTaskParallelism(3);
-      LocalCluster cluster = (LocalCluster) this.clojureLoader.createInstance(this, "backtype.storm.LocalCluster");
-      cluster.submitTopology(definition.getName(), conf, builder.createTopology());
-      td.setCluster(cluster);
-      td.setDefinition(definition);
+        Config conf = new Config();
+        conf.setDebug(true);
+        /*    if (name != null) {
+         conf.setNumWorkers(3);
+         StormSubmitter.submitTopology(name, conf, builder.createTopology());
+         } else {*/
+        conf.setMaxTaskParallelism(3);
+        LocalCluster cluster = (LocalCluster) this.clojureLoader.createInstance(this, "backtype.storm.LocalCluster");
+        cluster.submitTopology(definition.getName(), conf, builder.createTopology());
+        td.setCluster(cluster);
+        td.setDefinition(definition);
+      } catch (Exception ex) {
+        this.topologyMap.remove(definition.getName());
+        LOGGER.warn("Not deploying topology, " + definition.getName() + ", due to an error.", ex);
+      }
     }
     //}
   }

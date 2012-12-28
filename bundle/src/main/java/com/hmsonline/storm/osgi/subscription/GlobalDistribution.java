@@ -16,6 +16,6 @@ import com.hmsonline.storm.osgi.topology.Subscription;
 public class GlobalDistribution implements DistributionPolicy {
   @Override
   public void setup(BoltDeclarer declarer, Subscription subscription) {
-    declarer.globalGrouping(subscription.getTo().getName(), subscription.getStream().getId());
+    declarer.globalGrouping(subscription.getTo(), subscription.getStream().getId());
   }
 }

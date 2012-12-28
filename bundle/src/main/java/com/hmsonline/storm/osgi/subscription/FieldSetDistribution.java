@@ -23,7 +23,7 @@ public class FieldSetDistribution implements DistributionPolicy {
   
   @Override
   public void setup(BoltDeclarer declarer, Subscription subscription) {
-    declarer.fieldsGrouping(subscription.getTo().getName(), subscription.getStream().getId(), new Fields(fields));
+    declarer.fieldsGrouping(subscription.getTo(), subscription.getStream().getId(), new Fields(fields));
   }
 
   /**

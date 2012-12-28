@@ -28,6 +28,6 @@ public class DirectDistribution implements DistributionPolicy {
 
   @Override
   public void setup(BoltDeclarer declarer, Subscription subscription) {
-    declarer.directGrouping(subscription.getTo().getName(), subscription.getStream().getId());
+    declarer.directGrouping(subscription.getTo(), subscription.getStream().getId());
   }
 }

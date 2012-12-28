@@ -1,12 +1,12 @@
 package com.hmsonline.storm.osgi.tuple;
 
 /**
- *
+ * @org.apache.xbean.XBean element="stream"
  * @author rmoquin
  */
 public class TupleStream implements ITupleStream {
   private String id;
-  private ITupleSchema schema;
+  private String[] schema;
 
   /**
    * @return the id
@@ -28,15 +28,14 @@ public class TupleStream implements ITupleStream {
    * @return the schema
    */
   @Override
-  public ITupleSchema getSchema() {
+  public String[] getSchema() {
     return schema;
   }
 
   /**
    * @param schema the schema to set
    */
-  @Override
-  public void setSchema(ITupleSchema schema) {
+  public void setSchema(String[] schema) {
     this.schema = schema;
   }
 }

@@ -1,16 +1,18 @@
 package com.hmsonline.storm.osgi.tuple;
 
+import java.io.Serializable;
+
 /**
  *
  * @author rmoquin
  */
-public interface ITupleStream {
+public interface ITupleStream extends Serializable {
 
   public String getId();
 
   public void setId(String id);
 
-  public ITupleSchema getSchema();
+  public String[] getSchema();
 
-  public void setSchema(ITupleSchema schema);
+  public void setSchema(String[] schema);
 }

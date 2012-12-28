@@ -16,17 +16,16 @@ import org.slf4j.LoggerFactory;
 /**
  * The parent definition for bolts, it should be subclassed to make it easier to
  * assign a tag configuration for each implementation.
- *
+ * @org.apache.xbean.XBean
  * @author rmoquin
  */
-public abstract class BoltDefinition extends ComponentDefinition implements IRichBolt {
+public class BoltDefinition extends ComponentDefinition implements IRichBolt {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(BoltDefinition.class);
   private Subscription subscription;
   private IBoltExecutor executor;
   private OutputCollector collector;
   protected TopologyContext context;
-  protected Map configuration;
 
   @PostConstruct
   public void initBolt() {
@@ -45,9 +44,9 @@ public abstract class BoltDefinition extends ComponentDefinition implements IRic
   @Override
   public void execute(Tuple tuple) {
     List<Object> output = this.executor.execute(tuple);
-    if (this.streams != null) {
+    if (this.getStreams() != null) {
       if (output != null) {
-        for (TupleStream stream : super.streams) {
+        for (TupleStream stream : super.getStreams()) {
           collector.emit(stream.getId(), output);
         }
       } else {

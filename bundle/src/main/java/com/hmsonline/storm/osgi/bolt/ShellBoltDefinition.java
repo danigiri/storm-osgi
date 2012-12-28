@@ -11,21 +11,23 @@ import javax.annotation.PostConstruct;
 /**
  * A bolt that can be configured to run a shell command.
  *
- * @org.apache.xbean.XBean element="shellBolt" description="A bolt that can be configured to run a shell command."
+ * @org.apache.xbean.XBean element="shellBolt" description="A bolt that can be
+ * configured to run a shell command."
  *
  * @author rmoquin
  */
 public class ShellBoltDefinition extends BoltDefinition {
 
-  private String[] command;
+  private List<String> command;
   private ShellBolt shellTask;
 
   @PostConstruct
   @Override
   public void initBolt() {
-    shellTask = new ShellBolt(command);
+    String[] commands = new String[command.size()];
+    command.toArray(commands);
+    shellTask = new ShellBolt(commands);
     this.setExecutor(new IBoltExecutor() {
-
       @Override
       public List<Object> execute(Tuple tuple) {
         ShellBoltDefinition.this.shellTask.execute(tuple);
@@ -45,18 +47,18 @@ public class ShellBoltDefinition extends BoltDefinition {
   public void cleanup() {
     this.shellTask.cleanup();
   }
-  
+
   /**
    * @return the command
    */
-  public String[] getCommand() {
+  public List<String> getCommand() {
     return command;
   }
 
   /**
    * @param command the command to set
    */
-  public void setCommand(String[] command) {
+  public void setCommand(List<String> command) {
     this.command = command;
   }
 }

@@ -13,20 +13,4 @@ package com.hmsonline.storm.osgi.spout;
  * @author rmoquin
  */
 public class BasicSpoutDefinition extends SpoutDefinition {
-
-  /**
-   * @return the source
-   */
-  @Override
-  public ITupleSource getSource() {
-    return super.source;
-  }
-
-  /**
-   * @param source the source to set
-   */
-  @Override
-  public void setSource(ITupleSource source) {
-    super.source = source;
-  }
 }

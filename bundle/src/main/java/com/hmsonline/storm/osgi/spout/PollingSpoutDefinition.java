@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
  * @see ITupleSource
  * @author rmoquin
  */
-public class PollingSpoutDefinition extends SpoutDefinition<ITupleSource> {
+public class PollingSpoutDefinition extends SpoutDefinition {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(PollingSpoutDefinition.class);
   private ScheduledExecutorService executorService;
@@ -80,21 +80,5 @@ public class PollingSpoutDefinition extends SpoutDefinition<ITupleSource> {
    */
   public void setUnit(TimeUnit unit) {
     this.unit = unit;
-  }
-
-  /**
-   * @return the source
-   */
-  @Override
-  public ITupleSource getSource() {
-    return super.source;
-  }
-
-  /**
-   * @param source the source to set
-   */
-  @Override
-  public void setSource(ITupleSource source) {
-    super.source = source;
   }
 }

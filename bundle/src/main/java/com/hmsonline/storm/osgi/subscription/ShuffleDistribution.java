@@ -16,6 +16,6 @@ import com.hmsonline.storm.osgi.topology.Subscription;
 public class ShuffleDistribution implements DistributionPolicy {
   @Override
   public void setup(BoltDeclarer declarer, Subscription subscription) {
-    declarer.shuffleGrouping(subscription.getTo().getName(), subscription.getStream().getId());
+    declarer.shuffleGrouping(subscription.getTo(), subscription.getStream().getId());
   }
 }

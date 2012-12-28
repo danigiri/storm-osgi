@@ -20,6 +20,6 @@ import com.hmsonline.storm.osgi.topology.Subscription;
 public class NoneDistribution implements DistributionPolicy {
   @Override
   public void setup(BoltDeclarer declarer, Subscription subscription) {
-    declarer.noneGrouping(subscription.getTo().getName(), subscription.getStream().getId());
+    declarer.noneGrouping(subscription.getTo(), subscription.getStream().getId());
   }
 }
