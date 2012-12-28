@@ -6,9 +6,9 @@
     <artifactId>osgi-parent</artifactId>
     <version>0.9.0-SNAPSHOT</version>
   </parent>
-  <artifactId>storm-starter-namespace</artifactId>
+  <artifactId>storm-starter</artifactId>
   <packaging>bundle</packaging>
-  <name>Storm Starter Namespace</name>  
+  <name>Storm Starter API</name>  
   <build>
     <plugins>
       <plugin>
@@ -19,7 +19,6 @@
             <configuration>
               <strictXsdOrder>false</strictXsdOrder>
               <namespace>http://storm.hmsonline.com/schemas/starter</namespace>
-              <schema>${project.build.outputDirectory}/storm-starter.xsd</schema>
             </configuration>
             <goals>
               <goal>mapping</goal>

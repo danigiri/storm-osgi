@@ -40,6 +40,10 @@
             <Import-Package>
               clojure.lang,
               carbonite,
+              com.esotericsoftware.kryo,
+              com.esotericsoftware.kryo.io,
+              com.esotericsoftware.kryo.serializers,
+              com.esotericsoftware.kryo.util,
               *
             </Import-Package>
           </instructions>

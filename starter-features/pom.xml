@@ -28,7 +28,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>storm-starter-namespace</artifactId>
+      <artifactId>word-count-topology</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
