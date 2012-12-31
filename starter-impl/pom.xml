@@ -41,6 +41,7 @@
               org.apache.xbean*,
               *
             </Import-Package>
+            <Fragment-Host>${project.groupId}.storm-osgi</Fragment-Host>
           </instructions>
         </configuration>
       </plugin>
@@ -51,11 +52,6 @@
       <groupId>com.hmsonline.storm</groupId>
       <artifactId>storm-osgi</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-      <version>3.2.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.xbean</groupId>

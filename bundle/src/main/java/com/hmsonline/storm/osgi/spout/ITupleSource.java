@@ -24,5 +24,5 @@ public interface ITupleSource extends Serializable {
    *
    * @param queue
    */
-  void setTupleQueue(Queue<List> queue);
+  void setTupleQueue(Queue<List<Object>> queue);
 }

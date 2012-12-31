@@ -7,6 +7,7 @@ import backtype.storm.utils.Utils;
 import com.hmsonline.storm.osgi.tuple.TupleStream;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,10 @@ public class ComponentDefinition extends BaseComponent implements ITopologyCompo
       defaultStream.setSchema(schema);
       streams = new TupleStream[]{defaultStream};
     }
+  }
+  
+  @PreDestroy
+  public void destroyDefinition() {
   }
 
   @Override

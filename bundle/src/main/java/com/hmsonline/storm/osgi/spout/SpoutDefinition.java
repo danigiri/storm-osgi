@@ -21,14 +21,14 @@ public class SpoutDefinition extends ComponentDefinition implements IRichSpout {
   private static final Logger LOGGER = LoggerFactory.getLogger(SpoutDefinition.class);
   private ITupleSource source;
   private SpoutOutputCollector collector;
-  private Queue<List> tupleQueue;
+  private Queue<List<Object>> tupleQueue;
 
   @Override
   public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
     if (this.source == null) {
       throw new IllegalStateException("A tuple source implementation must be configured.");
     }
-    tupleQueue = new ConcurrentLinkedQueue<List>();
+    tupleQueue = new ConcurrentLinkedQueue<List<Object>>();
     this.collector = collector;
     this.source.setTupleQueue(this.tupleQueue);
   }

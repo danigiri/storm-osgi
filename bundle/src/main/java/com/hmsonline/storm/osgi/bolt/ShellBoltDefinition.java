@@ -18,15 +18,20 @@ import javax.annotation.PostConstruct;
  */
 public class ShellBoltDefinition extends BoltDefinition {
 
-  private List<String> command;
+  private String[] command;
   private ShellBolt shellTask;
 
   @PostConstruct
   @Override
   public void initBolt() {
-    String[] commands = new String[command.size()];
-    command.toArray(commands);
-    shellTask = new ShellBolt(commands);
+    //Moved logic to prepare, since the annotations are apparently not called when clojure gets it's dirty little hands on things.
+    //This also means that the super call needs commented in order to avoid failures when the annotation does get invoked.
+    //super.initBolt();
+  }
+
+  @Override
+  public void prepare(Map configuration, TopologyContext context, OutputCollector collector) {
+    shellTask = new ShellBolt(command);
     this.setExecutor(new IBoltExecutor() {
       @Override
       public List<Object> execute(Tuple tuple) {
@@ -34,31 +39,33 @@ public class ShellBoltDefinition extends BoltDefinition {
         return null;
       }
     });
-    super.initBolt();
-  }
-
-  @Override
-  public void prepare(Map configuration, TopologyContext context, OutputCollector collector) {
     super.prepare(configuration, context, collector);
     this.shellTask.prepare(configuration, context, collector);
   }
 
+/*  @PreDestroy
+  public void destroy() {
+    this.shellTask.cleanup();
+  }*/
+
   @Override
   public void cleanup() {
+    //Why bother, this isn't guarenteed to be called anyhow....but I guess I have to since the PreDestroy
+    //probably won't get called because Clojure will mess it up.
     this.shellTask.cleanup();
   }
 
   /**
    * @return the command
    */
-  public List<String> getCommand() {
+  public String[] getCommand() {
     return command;
   }
 
   /**
    * @param command the command to set
    */
-  public void setCommand(List<String> command) {
+  public void setCommand(String[] command) {
     this.command = command;
   }
 }

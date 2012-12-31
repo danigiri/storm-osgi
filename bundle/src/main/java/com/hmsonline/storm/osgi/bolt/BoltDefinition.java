@@ -10,6 +10,7 @@ import com.hmsonline.storm.osgi.tuple.TupleStream;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +56,10 @@ public class BoltDefinition extends ComponentDefinition implements IRichBolt {
     }
   }
 
+  @PreDestroy
+  public void destroyBolt() {
+  }
+  
   @Override
   public void cleanup() {
     //Why bother, this isn't guarenteed to be called anyhow....

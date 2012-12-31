@@ -47,8 +47,8 @@
     <module>bundle</module>
     <module>blueprint</module>
     <module>features</module>
-    <module>starter</module>
-    <module>starter-namespace</module>
+    <module>starter-impl</module>
+    <module>word-count-topology</module>
     <module>starter-features</module>
   </modules>
   <build>
